@@ -1,6 +1,10 @@
 
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
+using Talabat.APIs.Middlewares;
 using Talabat.Core.Entities.Products;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Repository;
@@ -32,6 +36,25 @@ namespace Talabat.APIs
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = (actionContext) =>
+                {
+                    var errors = actionContext.ModelState
+                    .Where(P => P.Value.Errors.Count() > 0)
+                    .SelectMany(p => p.Value.Errors)
+                    .Select(x => x.ErrorMessage)
+                    .ToList();
+
+                    var response = new ApiValidationError()
+                    {
+                        Errors = errors
+                    };
+
+                    return new BadRequestObjectResult(response);
+                };
+            });
+
             #endregion
 
             var app = builder.Build();
@@ -59,12 +82,17 @@ namespace Talabat.APIs
             }
 
             #region Configure Kestrel Middlewares
+
+            app.UseMiddleware<ExceptionMiddleware>();
+
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+
+            app.UseStatusCodePagesWithReExecute("/errors/{0}");
 
             app.UseHttpsRedirection();
 
