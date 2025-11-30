@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
@@ -17,8 +18,25 @@ namespace Talabat.Core.Spicifications.Product_Spec
 
             if (!string.IsNullOrEmpty(sort))
             {
+                switch (sort)
+                {
+                    case "priceAsc":
+                        AddOrderBy(P => P.Price);
+                        break;
 
+                    case "priceDesc":
+                        AddOrderDescByExpression(P => P.Price);
+                        break;
+
+                    default:
+                        AddOrderBy(P => P.Name);
+                        break;
+                }
             }
+            else
+                AddOrderBy(P => P.Name);
+                
+            
         }
 
         public ProductWithBrandAndCategorySpecifications(int id) : base(p => p.Id == id)
