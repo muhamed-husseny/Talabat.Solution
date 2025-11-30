@@ -10,21 +10,26 @@ namespace Talabat.Core.Spicifications.Product_Spec
 {
     public class ProductWithBrandAndCategorySpecifications : BaseSpecifications<Product>
     {
-        public ProductWithBrandAndCategorySpecifications() : base()
+        public ProductWithBrandAndCategorySpecifications(string sort) : base()
         {
-            AddIncludes();
+            Includes.Add(P => P.Brand);
+            Includes.Add(P => P.Category);
+
+            if (!string.IsNullOrEmpty(sort))
+            {
+
+            }
         }
 
         public ProductWithBrandAndCategorySpecifications(int id) : base(p => p.Id == id)
         {
-            AddIncludes();
-        }
-
-        private void AddIncludes()
-        {
             Includes.Add(P => P.Brand);
             Includes.Add(P => P.Category);
+
+            
         }
+
+       
     }
 
     
