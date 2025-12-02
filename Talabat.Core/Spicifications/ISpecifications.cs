@@ -18,6 +18,12 @@ namespace Talabat.Core.Spicifications
 
          public Expression<Func<T, object>> OrderByDesc { get; set; }
 
+         public int Skip { get; set; }
+
+         public int Take { get; set; }
+
+         public bool IsPagingEnabled { get; set; }
+
 
 
     }
