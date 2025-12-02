@@ -12,11 +12,13 @@ namespace Talabat.Core.Spicifications.Product_Spec
     public class ProductWithBrandAndCategorySpecifications : BaseSpecifications<Product>
     {
         public ProductWithBrandAndCategorySpecifications(ProductSpecParams specParams) : base(P =>
-        (!specParams.BrandId.HasValue || P.BrandId == specParams.BrandId.Value) && (!specParams.CategoryId.HasValue || P.CategoryId == specParams.CategoryId.Value))
+        (string.IsNullOrEmpty(specParams.Search) || P.Name.ToLower().Contains(specParams.Search)) &&
+        (!specParams.BrandId.HasValue || P.BrandId == specParams.BrandId.Value) &&
+        (!specParams.CategoryId.HasValue || P.CategoryId == specParams.CategoryId.Value))
         {
             Includes.Add(P => P.Brand);
             Includes.Add(P => P.Category);
-
+            
             if (!string.IsNullOrEmpty(specParams.Sort))
             {
                 switch (specParams.Sort)
