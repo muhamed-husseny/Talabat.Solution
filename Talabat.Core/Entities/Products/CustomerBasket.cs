@@ -8,8 +8,8 @@ namespace Talabat.Core.Entities.Products
 {
     public class CustomerBasket
     {
-        public int Id { get; set; }
-
-        public List<BasketItem> items { get; set; }
+        public string Id { get; set; }
+        public List<BasketItem> Items { get; set; } = new();
     }
+
 }
