@@ -10,10 +10,10 @@ using Talabat.Core.Repositories.Contract;
 
 namespace Talabat.Repository
 {
-    internal class BasketReposiory : IBasketRepository
+    public class BasketRepository : IBasketRepository
     {
         private readonly IDatabase _database;
-        public BasketReposiory(IConnectionMultiplexer redis)
+        public BasketRepository(IConnectionMultiplexer redis)
         {
             _database = redis.GetDatabase();
         }

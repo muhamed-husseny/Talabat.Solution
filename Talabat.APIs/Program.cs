@@ -39,6 +39,8 @@ namespace Talabat.APIs
                 return ConnectionMultiplexer.Connect(config);
             });
 
+            builder.Services.AddScoped<IBasketRepository, BasketRepository>();
+
             builder.Services.AddScoped(typeof(IGenaricRepositoriy<>), typeof(GenaricRepository<>));
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
@@ -61,7 +63,7 @@ namespace Talabat.APIs
                     return new BadRequestObjectResult(response);
                 };
             });
-
+            
             #endregion
 
             var app = builder.Build();
