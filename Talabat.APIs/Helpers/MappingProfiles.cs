@@ -13,7 +13,10 @@ namespace Talabat.APIs.Helpers
             CreateMap<Product, ProductToReturnDto>()
                 .ForMember(d => d.Brand, o => o.MapFrom(s => s.Brand.Name))
                 .ForMember(d => d.Category, o => o.MapFrom(s => s.Category.Name))
-                .ForMember(p => p.PictureUrl, o => o.MapFrom<ProductPictureUrlResolver>());           
+                .ForMember(p => p.PictureUrl, o => o.MapFrom<ProductPictureUrlResolver>());
+
+            CreateMap<CustomerBasketDto, CustomerBasket>();
+            CreateMap<BasketItemDto, BasketItem>();
         }
     }
 }
