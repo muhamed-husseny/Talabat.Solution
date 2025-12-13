@@ -1,16 +1,20 @@
 
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using StackExchange.Redis;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
+using Talabat.Core.Entities.Identity;
 using Talabat.Core.Entities.Products;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
 using Talabat.Repository.Identity;
+using Talabat.Repository.Identity.DataSeed;
 
 namespace Talabat.APIs
 {
@@ -47,6 +51,10 @@ namespace Talabat.APIs
 
             builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
+            builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
+            {
+            }).AddEntityFrameworkStores<AppIdentityDbContext>();
+
             builder.Services.AddScoped(typeof(IGenaricRepositoriy<>), typeof(GenaricRepository<>));
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
@@ -70,6 +78,7 @@ namespace Talabat.APIs
                 };
             });
             
+
             #endregion
 
             var app = builder.Build();
@@ -78,6 +87,7 @@ namespace Talabat.APIs
 
             var Services = scope.ServiceProvider;
 
+            #region Update Database
             var _dbContext = Services.GetRequiredService<StoreDbContext>();
             // Ask CLR for Creating Object from dbContext Explicitly
 
@@ -93,13 +103,17 @@ namespace Talabat.APIs
 
                 await _IdentityDbContext.Database.MigrateAsync();
 
+                var _userManager = Services.GetRequiredService<UserManager<AppUser>>();
+                await AppIdentityDbContextSeed.SeedUsersAsync(_userManager);
+
             }
             catch (Exception ex)
             {
                 var logger = LoggerFactory.CreateLogger<Program>();
                 logger.LogError(ex, "An error occurred during migration");
 
-            }
+            } 
+            #endregion
 
             #region Configure Kestrel Middlewares
 
