@@ -8,6 +8,7 @@ using StackExchange.Redis;
 using Talabat.APIs.Errors;
 using Talabat.APIs.Helpers;
 using Talabat.APIs.Middlewares;
+using Talabat.Core;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Entities.Products;
 using Talabat.Core.Repositories.Contract;
@@ -51,11 +52,13 @@ namespace Talabat.APIs
 
             builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+
             builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
             {
             }).AddEntityFrameworkStores<AppIdentityDbContext>();
 
-            builder.Services.AddScoped(typeof(IGenaricRepositoriy<>), typeof(GenaricRepository<>));
+            //builder.Services.AddScoped(typeof(IGenaricRepositoriy<>), typeof(GenaricRepository<>));
 
             builder.Services.AddAutoMapper(typeof(MappingProfiles));
 
