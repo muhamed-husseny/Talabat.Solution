@@ -23,10 +23,10 @@ namespace Talabat.APIs.Controllers
             _mapper = mapper;
         }
 
-        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(Order), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(typeof(OrderToReturnDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status400BadRequest)]
         [HttpPost]
-        public async Task<IActionResult> CreateOrder(OrderDto orderDto)
+        public async Task<ActionResult<OrderToReturnDto>> CreateOrder(OrderDto orderDto)
         {
             var address = _mapper.Map<AddressDto, Address>(orderDto.ShippingAddress);
             var order = await _orderService.CreateOrderAsync(orderDto.BuyerEmail,orderDto.BasketId,
@@ -34,27 +34,27 @@ namespace Talabat.APIs.Controllers
 
             if (order is null) return BadRequest(new ApiResponse(400));
 
-            return Ok(order);
+            return Ok(_mapper.Map<Order,OrderToReturnDto>(order));
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetOrdersForUsers(string email)
+        public async Task<ActionResult<IReadOnlyList<OrderToReturnDto>>> GetOrdersForUsers(string email)
         {
             var orders = await _orderService.GetOrdersForUsersAsync(email);
 
-            return Ok(orders);
+            return Ok(_mapper.Map<IReadOnlyList<Order>, IReadOnlyList<OrderToReturnDto>>(orders));
         }
 
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetOredersForUser(int id, string email)
+        public async Task<ActionResult<OrderItemDto>> GetOredersForUser(int id, string email)
         {
             var order = await _orderService.GetOrderByIdAsync(id, email);
 
             if(order is null) return NotFound(new ApiResponse(404));
 
-            return Ok(order);
+            return Ok(_mapper.Map<OrderToReturnDto>(order));
         }
     }
 }
