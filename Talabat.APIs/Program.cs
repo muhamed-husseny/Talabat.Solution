@@ -12,10 +12,12 @@ using Talabat.Core;
 using Talabat.Core.Entities.Identity;
 using Talabat.Core.Entities.Products;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Core.Service.Contract;
 using Talabat.Repository;
 using Talabat.Repository.Data;
 using Talabat.Repository.Identity;
 using Talabat.Repository.Identity.DataSeed;
+using Talabat.Service;
 
 namespace Talabat.APIs
 {
@@ -53,6 +55,8 @@ namespace Talabat.APIs
             builder.Services.AddScoped<IBasketRepository, BasketRepository>();
 
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
+
+            builder.Services.AddScoped<IOrderService, OrderService>();
 
             builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
             {

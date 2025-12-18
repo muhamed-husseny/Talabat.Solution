@@ -46,9 +46,12 @@ namespace Talabat.Service
 
             if(basket?.Items?.Count > 0)
             {
+                var productRepository = _unitOfWork.Repositoriy<Product>();
                 foreach (var item in basket.Items)
                 {
-                    var product = await _unitOfWork.Repositoriy<Product>().GetAsync(item.Id);
+                    var product = await productRepository.GetAsync(item.Id);
+                    if (product == null)
+                        throw new Exception($"Product with Id {item.Id} not found");
 
                     var productItemOrdered = new ProductItemOrdered(item.Id, product.Name, product.PictureUrl);
                     
@@ -65,6 +68,9 @@ namespace Talabat.Service
             // 4. Get Delivery Method From DeliveryMethod Repo.
 
             var deliveryMethod = await _unitOfWork.Repositoriy<DeliveryMethod>().GetAsync(deliveryMethodId);
+            if (deliveryMethod == null)
+                throw new Exception("Invalid delivery method");
+
 
             // 5. Create Order.
 
@@ -86,8 +92,11 @@ namespace Talabat.Service
             throw new NotImplementedException();
         }
 
-        public Task<IReadOnlyList<Order>> GetOrdersForUsersAsync(string buyerEmail)
+        public async Task<IReadOnlyList<Order>> GetOrdersForUsersAsync(string buyerEmail)
         {
+            //var ordersRepo = _unitOfWork.Repositoriy<Order>();
+
+            //var orders = await ordersRepo.GetAllWithSpecAsync();
             throw new NotImplementedException();
         }
     }
