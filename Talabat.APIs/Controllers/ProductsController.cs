@@ -51,7 +51,7 @@ namespace Talabat.APIs.Controllers
         {
             var spec = new ProductWithBrandAndCategorySpecifications(id);
 
-            var Product = await _productRepo.GetWithSpecAsync(spec);
+            var Product = await _productRepo.GetByIdWithSpecAsync(spec);
 
             if(Product is null)
                 return NotFound(new ApiResponse(404));

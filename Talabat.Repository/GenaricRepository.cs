@@ -35,11 +35,11 @@ namespace Talabat.Repository
             return await _dbContext.Set<T>().FindAsync(id);
         }
 
-       
-        public async Task<T?> GetWithSpecAsync(ISpecifications<T> spec)
+        public async Task<T?> GetByIdWithSpecAsync(ISpecifications<T> spec)
         {
             return await ApplySpecifications(spec).FirstOrDefaultAsync();
         }
+
         public async Task<IReadOnlyList<T>> GetAllWithSpecAsync(ISpecifications<T> spec)
         {
             return await ApplySpecifications(spec).ToListAsync();
@@ -63,5 +63,12 @@ namespace Talabat.Repository
 
         public void Delete(T entity)
          =>  _dbContext.Remove(entity);
+
+        public Task<T?> GetByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+      
     }
 }

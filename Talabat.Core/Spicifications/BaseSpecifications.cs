@@ -33,7 +33,7 @@ namespace Talabat.Core.Spicifications
             OrderBy = OrderByEcpression;
          }
 
-         public void AddOrderDescByExpression(Expression<Func<T, object>> OrderByDescEcpression)
+         public void AddOrderDesc(Expression<Func<T, object>> OrderByDescEcpression)
          {
             OrderByDesc = OrderByDescEcpression;
          }

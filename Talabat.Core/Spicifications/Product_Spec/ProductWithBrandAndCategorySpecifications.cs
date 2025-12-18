@@ -28,7 +28,7 @@ namespace Talabat.Core.Spicifications.Product_Spec
                         break;
 
                     case "priceDesc":
-                        AddOrderDescByExpression(P => P.Price);
+                        AddOrderDesc(P => P.Price);
                         break;
 
                     default:

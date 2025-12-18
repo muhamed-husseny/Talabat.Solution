@@ -37,11 +37,24 @@ namespace Talabat.APIs.Controllers
             return Ok(order);
         }
 
-        //public async Task<IActionResult> GetOrdersForUsers(string Email)
-        //{
-        //    var orders = await _orderService.GetOrdersForUsersAsync(Email);
+        [HttpGet]
+        public async Task<IActionResult> GetOrdersForUsers(string email)
+        {
+            var orders = await _orderService.GetOrdersForUsersAsync(email);
 
-        //    return Ok(orders);
-        //}
+            return Ok(orders);
+        }
+
+        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponse), StatusCodes.Status404NotFound)]
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetOredersForUser(int id, string email)
+        {
+            var order = await _orderService.GetOrderByIdAsync(id, email);
+
+            if(order is null) return NotFound(new ApiResponse(404));
+
+            return Ok(order);
+        }
     }
 }

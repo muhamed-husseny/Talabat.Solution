@@ -8,6 +8,7 @@ using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Entities.Products;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Service.Contract;
+using Talabat.Core.Spicifications.Order_Spec;
 
 namespace Talabat.Service
 {
@@ -49,7 +50,7 @@ namespace Talabat.Service
                 var productRepository = _unitOfWork.Repositoriy<Product>();
                 foreach (var item in basket.Items)
                 {
-                    var product = await productRepository.GetAsync(item.Id);
+                    var product = await productRepository.GetByIdAsync(item.Id);
                     if (product == null)
                         throw new Exception($"Product with Id {item.Id} not found");
 
@@ -67,7 +68,7 @@ namespace Talabat.Service
 
             // 4. Get Delivery Method From DeliveryMethod Repo.
 
-            var deliveryMethod = await _unitOfWork.Repositoriy<DeliveryMethod>().GetAsync(deliveryMethodId);
+            var deliveryMethod = await _unitOfWork.Repositoriy<DeliveryMethod>().GetByIdAsync(deliveryMethodId);
             if (deliveryMethod == null)
                 throw new Exception("Invalid delivery method");
 
@@ -87,17 +88,27 @@ namespace Talabat.Service
             return order;
         }
 
-        public Task<Order> GetOrderByIdAsync(int orderId, string buyerEmail)
-        {
-            throw new NotImplementedException();
-        }
-
+      
         public async Task<IReadOnlyList<Order>> GetOrdersForUsersAsync(string buyerEmail)
         {
-            //var ordersRepo = _unitOfWork.Repositoriy<Order>();
+            var ordersRepo = _unitOfWork.Repositoriy<Order>();
 
-            //var orders = await ordersRepo.GetAllWithSpecAsync();
-            throw new NotImplementedException();
+            var spec = new OrderSpecification(buyerEmail);
+
+            var orders = await ordersRepo.GetAllWithSpecAsync(spec);
+
+            return orders;
+        }
+
+        public Task<Order?> GetOrderByIdAsync(int orderId, string buyerEmail)
+        {
+            var ordersRepo = _unitOfWork.Repositoriy<Order>();
+
+            var orderSpec = new OrderSpecification(orderId, buyerEmail);
+
+            var order = ordersRepo.GetByIdWithSpecAsync(orderSpec);
+
+            return order;
         }
     }
 }
